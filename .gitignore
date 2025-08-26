@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Environments
+.venv/
+.env
+
+# Cursor / MCP
+.cursor/
+
+# macOS
+.DS_Store
+
+# Cache
+.cache/
+.mypy_cache/
+.pytype/
+.pytest_cache/
+
+# VSCode
+.vscode/
+
+# Local data/logs
+logs/
+*.log
