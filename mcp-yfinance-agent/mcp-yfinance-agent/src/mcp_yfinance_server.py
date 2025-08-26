@@ -24,7 +24,7 @@ class Bar(BaseModel):
     volume: float | None = None
 
 def safe_yf_call(func, *args, **kwargs):
-    """안전한 Yahoo Finance API 호출"""
+    """ Yahoo Finance API 호출"""
     for attempt in range(Config.YF_RETRY_COUNT):
         try:
             return func(*args, **kwargs)

@@ -23,6 +23,12 @@ class Config:
     AGENT_MAX_ITERATIONS = int(os.getenv("AGENT_MAX_ITERATIONS", "10"))
     AGENT_VERBOSE = os.getenv("AGENT_VERBOSE", "true").lower() == "true"
 
+    # 기본 메시지
+    DEFAULT_NOT_FOUND_MESSAGE = os.getenv(
+        "DEFAULT_NOT_FOUND_MESSAGE",
+        "지정된 결과를 찾을 수 없습니다. 입력을 확인하거나 다른 조건으로 다시 시도해 주세요.",
+    )
+
     # 시스템 프롬프트 (에이전트 역할/가이드라인 사전 주입)
     SYSTEM_PROMPT = os.getenv(
         "SYSTEM_PROMPT",

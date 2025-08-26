@@ -35,6 +35,8 @@ async def ask_stock_agent(query: str, max_iterations: int = 10) -> AgentResponse
         
         # 에이전트 실행
         result = await run_agent(query)
+        if not result or (isinstance(result, str) and result.strip() == ""):
+            result = Config.DEFAULT_NOT_FOUND_MESSAGE
         
         return AgentResponse(
             result=result,
