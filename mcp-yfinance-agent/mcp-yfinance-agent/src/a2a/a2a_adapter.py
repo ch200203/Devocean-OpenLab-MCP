@@ -111,7 +111,8 @@ class WebSocketTransport(A2ATransport):
             except Exception as e:
                 logger.error(f"WebSocket error: {e}")
         
-        self.server = await websockets.serve(handle_client, "localhost", port)
+        # 컨테이너 외부 접근을 위해 0.0.0.0 바인딩
+        self.server = await websockets.serve(handle_client, "0.0.0.0", port)
         logger.info(f"A2A WebSocket server started on port {port}")
     
     async def connect(self, endpoint: str) -> bool:

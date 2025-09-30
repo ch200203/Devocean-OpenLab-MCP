@@ -7,6 +7,7 @@ A2A 연동 통합 모듈
 import asyncio
 import logging
 from typing import Dict, Any, List, Optional
+import os
 from datetime import datetime
 
 from a2a_protocol import (
@@ -397,7 +398,7 @@ class A2AIntegrationManager:
 a2a_manager = A2AIntegrationManager()
 
 async def main():
-    """A2A 연동 테스트 메인 함수"""
+    """A2A 연동 메인 함수 (서버 모드/데모 모드)"""
     print("🚀 A2A Integration Manager 시작")
     
     # A2A 연동 초기화
@@ -406,13 +407,25 @@ async def main():
     # 상태 조회
     status = await a2a_manager.get_agent_status()
     print(f"📊 A2A 상태: {status}")
-    
-    # 협업 분석 테스트
+
+    # 서버 모드: 환경변수 A2A_SERVER=1 일 때 영구 실행
+    if os.getenv("A2A_SERVER", "0") == "1":
+        print("🟢 A2A 서버 모드 활성화: WebSocket 포트 8766/8767/8768 대기 중")
+        # 종료 신호까지 대기 (무기한)
+        try:
+            await asyncio.Event().wait()
+        except (KeyboardInterrupt, SystemExit):
+            pass
+        finally:
+            await a2a_manager.shutdown()
+            print("🛑 A2A 서버 종료")
+        return
+
+    # 기본: 데모 모드 (이전 동작 유지)
     print("\n🔍 AAPL 협업 분석 시작...")
     result = await a2a_manager.start_collaborative_analysis("AAPL", "test_user")
     print(f"📈 분석 결과: {result}")
     
-    # 종료
     await a2a_manager.shutdown()
     print("✅ A2A 연동 완료")
 

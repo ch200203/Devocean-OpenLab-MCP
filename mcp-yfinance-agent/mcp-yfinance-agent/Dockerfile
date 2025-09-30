@@ -1,7 +1,8 @@
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH="/app/src:/app/src/agents:/app/src/core:/app/src/a2a"
 
 WORKDIR /app
 
@@ -17,7 +18,6 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy source
 COPY . /app
 
-# Default workdir is project root; reference modules via src/... paths
 WORKDIR /app
 
 # Default command can be overridden in docker-compose per service

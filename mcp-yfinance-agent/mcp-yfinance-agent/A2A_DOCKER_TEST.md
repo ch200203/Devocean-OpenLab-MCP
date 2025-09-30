@@ -1,13 +1,9 @@
-## A2A Docker 이미지 빌드 & 테스트 가이드
-
-이 문서는 A2A(WebSocket) 통합 서버를 Docker/Compose로 빌드하고 로컬에서 테스트하는 방법을 설명합니다. OpenAI 기반 LLM을 사용하도록 설정되어 있습니다.
-
 ### 1) 사전 요구사항
 - Docker, Docker Compose 설치
 - OpenAI API 키 보유
-
+d
 ### 2) 환경 변수 설정 (.env)
-프로젝트 루트의 `.env` 파일을 생성(또는 기존 파일 수정) 후 OpenAI 키를 채웁니다.
+프로젝트 루트의 `.env` 파일을 생성(또는 기존 파일 수정) 후 OpenAI 키를 개인적으로 넣어줘야 합니다.
 
 ```bash
 cp env.example .env

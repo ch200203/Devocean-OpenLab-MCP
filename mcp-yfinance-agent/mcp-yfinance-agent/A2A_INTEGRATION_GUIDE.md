@@ -38,8 +38,6 @@
             └────────────────────────────────┘
 ```
 
-## 🚀 빠른 시작
-
 ### 1. 서버 연결
 
 우리 시스템에 연결하려면 다음 엔드포인트를 사용하세요:
@@ -69,12 +67,12 @@ async def connect_to_investment_agent():
     
     async with websockets.connect(uri) as websocket:
         # 연결 확인
-        print("✅ 투자 분석 에이전트에 연결됨")
+        print("투자 분석 에이전트에 연결됨")
         
-        # 메시지 수신 대기
+        # 수신 대기
         async for message in websocket:
             data = json.loads(message)
-            print(f"📨 수신: {data}")
+            print(f"수신: {data}")
             break
 
 # 연결 실행
@@ -393,7 +391,7 @@ async def http_risk_analysis(ticker: str):
 ```python
 #!/usr/bin/env python3
 """
-외부 AI 에이전트가 우리 시스템과 연동하는 완전한 예제
+외부 AI 에이전트 연동 예제
 """
 
 import asyncio
@@ -711,18 +709,8 @@ async def real_time_analysis_stream(tickers: List[str]):
         # 실시간 데이터 수신
         async for message in websocket:
             data = json.loads(message)
-            print(f"📊 실시간 분석: {data}")
+            print(f"실시간 분석: {data}")
 ```
-
-## 📞 지원 및 문의
-
-- **GitHub Repository**: [mcp-yfinance-agent](https://github.com/your-repo/mcp-yfinance-agent)
-- **문서**: [A2A Integration Guide](https://your-docs.com/a2a-guide)
-- **이슈 리포트**: [GitHub Issues](https://github.com/your-repo/mcp-yfinance-agent/issues)
-
-## 📝 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
 
 ---
 
