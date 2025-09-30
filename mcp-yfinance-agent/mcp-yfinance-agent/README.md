@@ -21,17 +21,16 @@
 - **리스크 관리**: 개인별 손절/익절 가이드라인 제공
 - **신뢰도 점수**: 추천의 신뢰도를 백분율로 표시
 
-### 포트폴리오 추적 및 관리
-- **보유 종목 관리**: 평단가, 수량, 섹터별 포지션 추적
-- **실시간 수익률 계산**: 미실현 손익 및 수익률 자동 계산
-- **포트폴리오 분석**: 집중도, 리스크 메트릭, 성과 분석
-- **포지션별 추천**: 보유 종목에 대한 개별 매수/매도 추천
+~### 포트폴리오 추적 및 관리~
+- ~**보유 종목 관리**: 평단가, 수량, 섹터별 포지션 추적~
+- ~**실시간 수익률 계산**: 미실현 손익 및 수익률 자동 계산~
+- ~**포트폴리오 분석**: 집중도, 리스크 메트릭, 성과 분석~
+- ~**포지션별 추천**: 보유 종목에 대한 개별 매수/매도 추천~
 
 ### A2A (AI-to-AI) 연동
 - **다중 에이전트 협업**: 투자, 리스크, 포트폴리오 에이전트 간 통신
 - **표준화된 프로토콜**: WebSocket/HTTP 기반 A2A 통신 프로토콜
 - **외부 에이전트 연동**: 다른 AI 에이전트와의 표준화된 인터페이스
-- **실시간 협업 분석**: 여러 에이전트의 분석 결과 통합 및 종합 판단
 
 ### 기존 기능
 - 실시간 주식 가격 조회
@@ -68,30 +67,6 @@ LLM_ID=cursor:auto   # Cursor 채팅에서는 가능하나, LangChain 내 직접
 SYSTEM_PROMPT="당신은 보수적 리스크 관리를 따르는 주식 분석 에이전트입니다..."
 ```
 
-### 3) Cursor MCP 등록
-`~/.cursor/mcp.json`에 venv 파이썬으로 등록(경로는 환경에 맞게 조정):
-```json
-{
-  "mcpServers": {
-    "yfinance": {
-      "command": "/Users/ihncheolhwan/develop/study/LangChain/.venv/bin/python",
-      "args": [
-        "/Users/ihncheolhwan/develop/study/LangChain/mcp-yfinance-agent/mcp-yfinance-agent/src/mcp_yfinance_server.py"
-      ],
-      "transport": "stdio"
-    },
-    "stock-agent": {
-      "command": "/Users/ihncheolhwan/develop/study/LangChain/.venv/bin/python",
-      "args": [
-        "/Users/ihncheolhwan/develop/study/LangChain/mcp-yfinance-agent/mcp-yfinance-agent/src/cursor_mcp_server.py"
-      ],
-      "transport": "stdio"
-    }
-  }
-}
-```
-Cursor를 Reload Window 후 사용하세요.
-
 ## 사용법
 
 ### 1) Cursor에서 직접 사용
@@ -111,32 +86,11 @@ Cursor를 Reload Window 후 사용하세요.
 - **포트폴리오 분석**: `/stock-agent.analyze_portfolio user_id=my_user`
 - **포지션 추천**: `/stock-agent.get_position_recommendation user_id=my_user ticker=AAPL`
 
-#### 기존 기능
-- 에이전트 정보: `/stock-agent.get_agent_info`
-- 일반 시세 질의: `/stock-agent.ask_stock_agent "AAPL 최신 가격과 최근 5일 요약해서 보여줘"`
 - 로우 데이터 도구:
   - `/yfinance.get_quote ticker=AAPL`
   - `/yfinance.get_history ticker=AAPL period=5d interval=1d`
 
-### 2) 로컬 테스트
-```bash
-# 기본 에이전트 테스트
-python mcp-yfinance-agent/mcp-yfinance-agent/src/agent_graph.py
-
-# 대화형 플로우 테스트
-python mcp-yfinance-agent/mcp-yfinance-agent/src/test_interactive_flow.py
-
-# 포트폴리오 데모
-python mcp-yfinance-agent/mcp-yfinance-agent/src/portfolio_demo.py
-
-# A2A 연동 테스트
-python mcp-yfinance-agent/mcp-yfinance-agent/src/a2a_simple_demo.py
-
-# 외부 에이전트 예제 (A2A 연동)
-python mcp-yfinance-agent/mcp-yfinance-agent/src/external_agent_example.py
-```
-
-### 3) 투자 성향 설문 예시
+### 2) 투자 성향 설문 예시
 ```
 1. 리스크 성향: conservative (보수적) / moderate (중간) / aggressive (공격적)
 2. 투자 기간: short_term (단기) / medium_term (중기) / long_term (장기)
@@ -255,37 +209,9 @@ flowchart TD
 - **`requirements.txt`**: pandas, numpy 의존성 추가
 - **`~/.cursor/mcp.json`**: MCP 서버 등록 (기존 유지)
 
-## A2A 연동 문서
-
-### 📖 상세 가이드
-- **[A2A 연동 가이드](A2A_INTEGRATION_GUIDE.md)**: 외부 AI 에이전트 연동을 위한 완전한 문서
-- **프로토콜 스펙**: WebSocket/HTTP 기반 표준화된 통신 프로토콜
-- **예제 코드**: 외부 에이전트 구현을 위한 실제 코드 예제
-
-### 🚀 A2A 서버 시작
-```bash
-# A2A 통합 서버 시작
-python mcp-yfinance-agent/mcp-yfinance-agent/src/a2a_integration.py
-
-# 간단한 A2A 데모
-python mcp-yfinance-agent/mcp-yfinance-agent/src/a2a_simple_demo.py
-
-# 외부 에이전트 예제
-python mcp-yfinance-agent/mcp-yfinance-agent/src/external_agent_example.py
-```
 
 ### 🔗 엔드포인트
 - **투자 분석**: `ws://localhost:8766`
 - **리스크 분석**: `ws://localhost:8767`
-- **포트폴리오 관리**: `ws://localhost:8768`
+- ~**포트폴리오 관리**: `ws://localhost:8768`~
 - **HTTP API**: `http://localhost:8000/a2a`
-
-## Git
-- 기본 브랜치: `main`
-- 원격: `origin` → `https://github.com/ch200203/Devocean-OpenLab-MCP.git`
-- 브랜치 전략 예시:
-```bash
-git checkout -b feature/your-change
-# ... commit ...
-git push -u origin feature/your-change
-``` 
