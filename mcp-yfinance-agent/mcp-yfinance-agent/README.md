@@ -107,18 +107,7 @@ SYSTEM_PROMPT="너는 보수적 리스크 관리 원칙을 따르는 주식 분�
 
 ## LLM 설정 옵션
 
-### 1) Cursor Auto
-- Cursor 채팅에선 사용 가능하나, LangChain `init_chat_model("cursor:auto")`는 직접 지원되지 않을 수 있습니다.
-- 에이전트 스크립트 실행 시 이슈가 있으면 아래 옵션을 권장합니다.
-
-### 2) Ollama (무료, 권장 대안)
-- 로컬 모델을 설치하여 무료 사용 가능
-- 예시:
-```env
-LLM_ID=ollama:llama3.2
-```
-
-### 3) OpenAI (유료)
+### OpenAI .env 에 직접 널어주어야 합니다.
 ```env
 LLM_ID=openai:gpt-4o-mini
 OPENAI_API_KEY=your_openai_api_key_here
