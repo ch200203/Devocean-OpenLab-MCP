@@ -58,6 +58,16 @@ async def demo_conservative_investor():
         print(f"   종합 점수: {analysis.overall_score:.1f}/100")
         print(f"   리스크 점수: {analysis.risk_score:.1f}/100")
         
+        # 리스크 이벤트 분석 결과 출력
+        if analysis.risk_event_analysis:
+            print(f"\n⚠️  리스크 이벤트 분석:")
+            print(f"   리스크 레벨: {analysis.risk_event_analysis.risk_level}")
+            print(f"   리스크 점수: {analysis.risk_event_analysis.risk_score}/100")
+            print(f"   최근 이벤트: {analysis.risk_event_analysis.recent_events_count}개")
+            print(f"   고위험 이벤트: {analysis.risk_event_analysis.high_risk_events_count}개")
+            if analysis.risk_event_analysis.risk_factors:
+                print(f"   주요 리스크: {', '.join(analysis.risk_event_analysis.risk_factors)}")
+        
         print(f"\n💡 추천:")
         print(f"   액션: {recommendation['recommendation']}")
         print(f"   신뢰도: {recommendation['confidence']}%")
@@ -99,6 +109,16 @@ async def demo_aggressive_investor():
         print(f"   현재가: ${analysis.current_price:.2f} {analysis.currency}")
         print(f"   종합 점수: {analysis.overall_score:.1f}/100")
         print(f"   모멘텀 점수: {analysis.momentum_score:.1f}/100")
+        
+        # 리스크 이벤트 분석 결과 출력
+        if analysis.risk_event_analysis:
+            print(f"\n⚠️  리스크 이벤트 분석:")
+            print(f"   리스크 레벨: {analysis.risk_event_analysis.risk_level}")
+            print(f"   리스크 점수: {analysis.risk_event_analysis.risk_score}/100")
+            print(f"   최근 이벤트: {analysis.risk_event_analysis.recent_events_count}개")
+            print(f"   고위험 이벤트: {analysis.risk_event_analysis.high_risk_events_count}개")
+            if analysis.risk_event_analysis.risk_factors:
+                print(f"   주요 리스크: {', '.join(analysis.risk_event_analysis.risk_factors)}")
         
         print(f"\n💡 추천:")
         print(f"   액션: {recommendation['recommendation']}")

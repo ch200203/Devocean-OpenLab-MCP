@@ -27,6 +27,12 @@
 - **포트폴리오 분석**: 집중도, 리스크 메트릭, 성과 분석
 - **포지션별 추천**: 보유 종목에 대한 개별 매수/매도 추천
 
+### A2A (AI-to-AI) 연동
+- **다중 에이전트 협업**: 투자, 리스크, 포트폴리오 에이전트 간 통신
+- **표준화된 프로토콜**: WebSocket/HTTP 기반 A2A 통신 프로토콜
+- **외부 에이전트 연동**: 다른 AI 에이전트와의 표준화된 인터페이스
+- **실시간 협업 분석**: 여러 에이전트의 분석 결과 통합 및 종합 판단
+
 ### 기존 기능
 - 실시간 주식 가격 조회
 - 주식 히스토리 데이터 조회 (OHLCV)
@@ -122,6 +128,12 @@ python mcp-yfinance-agent/mcp-yfinance-agent/src/test_interactive_flow.py
 
 # 포트폴리오 데모
 python mcp-yfinance-agent/mcp-yfinance-agent/src/portfolio_demo.py
+
+# A2A 연동 테스트
+python mcp-yfinance-agent/mcp-yfinance-agent/src/a2a_simple_demo.py
+
+# 외부 에이전트 예제 (A2A 연동)
+python mcp-yfinance-agent/mcp-yfinance-agent/src/external_agent_example.py
 ```
 
 ### 3) 투자 성향 설문 예시
@@ -242,6 +254,31 @@ flowchart TD
 - **`src/test_interactive_flow.py`**: 대화형 플로우 테스트 스크립트
 - **`requirements.txt`**: pandas, numpy 의존성 추가
 - **`~/.cursor/mcp.json`**: MCP 서버 등록 (기존 유지)
+
+## A2A 연동 문서
+
+### 📖 상세 가이드
+- **[A2A 연동 가이드](A2A_INTEGRATION_GUIDE.md)**: 외부 AI 에이전트 연동을 위한 완전한 문서
+- **프로토콜 스펙**: WebSocket/HTTP 기반 표준화된 통신 프로토콜
+- **예제 코드**: 외부 에이전트 구현을 위한 실제 코드 예제
+
+### 🚀 A2A 서버 시작
+```bash
+# A2A 통합 서버 시작
+python mcp-yfinance-agent/mcp-yfinance-agent/src/a2a_integration.py
+
+# 간단한 A2A 데모
+python mcp-yfinance-agent/mcp-yfinance-agent/src/a2a_simple_demo.py
+
+# 외부 에이전트 예제
+python mcp-yfinance-agent/mcp-yfinance-agent/src/external_agent_example.py
+```
+
+### 🔗 엔드포인트
+- **투자 분석**: `ws://localhost:8766`
+- **리스크 분석**: `ws://localhost:8767`
+- **포트폴리오 관리**: `ws://localhost:8768`
+- **HTTP API**: `http://localhost:8000/a2a`
 
 ## Git
 - 기본 브랜치: `main`

@@ -182,7 +182,7 @@ class MemoryManager:
     
     def start_profile_collection(self, user_id: str) -> Dict[str, Any]:
         """투자 성향 수집 시작"""
-        collector = self.get_profile_collector(user_id)
+        collector = self.get_profile_collectors(user_id)
         collector.reset()
         
         # 사용자에게 투자 성향 수집 시작 알림
@@ -196,7 +196,7 @@ class MemoryManager:
     
     def process_profile_answer(self, user_id: str, step: str, answer: str) -> Dict[str, Any]:
         """투자 성향 답변 처리"""
-        collector = self.get_profile_collectors(user_id)
+        collector = self.get_profile_collector(user_id)
         memory = self.get_memory(user_id)
         
         # 사용자 답변 기록

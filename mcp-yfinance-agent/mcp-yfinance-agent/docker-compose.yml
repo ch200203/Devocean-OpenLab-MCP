@@ -1,0 +1,52 @@
+services:
+  yfinance:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp
+    command: ["python", "src/agents/mcp_yfinance_server.py"]
+    env_file:
+      - .env
+    networks: [internal]
+    restart: unless-stopped
+
+  risk:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp
+    command: ["python", "src/agents/mcp_risk_event_server.py"]
+    env_file:
+      - .env
+    networks: [internal]
+    restart: unless-stopped
+
+  stock_agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp
+    command: ["python", "src/agents/cursor_mcp_server.py"]
+    env_file:
+      - .env
+    depends_on: [yfinance, risk]
+    networks: [internal]
+    restart: unless-stopped
+
+  a2a:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "src/a2a/a2a_integration.py"]
+    env_file:
+      - .env
+    depends_on: [yfinance, risk, stock_agent]
+    ports:
+      - "8766:8766"
+      - "8767:8767"
+      - "8768:8768"
+    networks: [internal]
+    restart: unless-stopped
+
+networks:
+  internal:
+    driver: bridge
+
+

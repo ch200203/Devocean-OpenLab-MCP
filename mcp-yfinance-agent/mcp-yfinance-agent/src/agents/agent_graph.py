@@ -29,6 +29,11 @@ class InvestmentAgent:
                 "command": "python",
                 "args": ["./src/mcp_yfinance_server.py"],
                 "transport": "stdio",
+            },
+            "risk-event": {
+                "command": "python",
+                "args": ["./src/mcp_risk_event_server.py"],
+                "transport": "stdio",
             }
         })
         tools = await self.client.get_tools()
@@ -80,6 +85,8 @@ class InvestmentAgent:
             # 종목 분석 및 추천
             analysis = self.analyzer.analyze_stock(ticker, user_id)
             if analysis:
+                # 리스크 이벤트 분석 추가
+                await self._analyze_risk_events(ticker, analysis)
                 recommendation = self.recommendation_engine.get_recommendation(ticker, user_id)
                 
                 # 맞춤형 시스템 프롬프트 생성
@@ -171,6 +178,13 @@ class InvestmentAgent:
 - 매도 가격 범위: ${recommendation['sell_price_range']['lower']:.2f} - ${recommendation['sell_price_range']['upper']:.2f}
 - 손절매: ${recommendation['stop_loss']:.2f}
 - 익절매: ${recommendation['take_profit']:.2f}
+
+리스크 이벤트 분석:
+- 리스크 레벨: {analysis.risk_event_analysis.risk_level if analysis.risk_event_analysis else '분석 불가'}
+- 리스크 점수: {analysis.risk_event_analysis.risk_score if analysis.risk_event_analysis else 'N/A'}/100
+- 리스크 팩터: {', '.join(analysis.risk_event_analysis.risk_factors) if analysis.risk_event_analysis else '분석 불가'}
+- 최근 이벤트: {analysis.risk_event_analysis.recent_events_count if analysis.risk_event_analysis else 0}개
+- 고위험 이벤트: {analysis.risk_event_analysis.high_risk_events_count if analysis.risk_event_analysis else 0}개
 """
         
         return f"{base_prompt}\n\n{profile_info}\n\n위 정보를 바탕으로 사용자의 투자 성향에 맞는 맞춤형 조언을 제공하세요."
@@ -188,6 +202,29 @@ class InvestmentAgent:
 """
         
         return f"{base_prompt}\n\n{profile_info}\n\n사용자의 투자 성향을 고려하여 조언을 제공하세요."
+    
+    async def _analyze_risk_events(self, ticker: str, analysis) -> None:
+        """리스크 이벤트 분석 (MCP 에이전트 호출)"""
+        try:
+            if not self.agent:
+                await self.initialize()
+            
+            # 리스크 이벤트 분석 요청
+            risk_query = f"analyze_risk_events ticker={ticker}"
+            
+            result = await self.agent.ainvoke({
+                "messages": [
+                    {"role": "system", "content": "종목의 리스크 이벤트를 분석해주세요."},
+                    {"role": "user", "content": risk_query},
+                ]
+            })
+            
+            # 분석 결과를 기존 분석에 통합
+            # TODO: MCP 에이전트 결과를 analysis 객체에 통합하는 로직 구현
+            
+        except Exception as e:
+            print(f"리스크 이벤트 분석 중 오류: {e}")
+            # 오류 발생 시 기본값 사용
 
 # 전역 에이전트 인스턴스
 investment_agent = InvestmentAgent()

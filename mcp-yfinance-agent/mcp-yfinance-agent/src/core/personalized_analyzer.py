@@ -23,6 +23,16 @@ class TechnicalIndicators:
     price_change_1m: float
 
 @dataclass
+class RiskEventAnalysis:
+    """리스크 이벤트 분석 결과"""
+    risk_score: int  # 0-100
+    risk_level: str  # "low", "medium", "high", "critical"
+    risk_factors: List[str]
+    recent_events_count: int
+    high_risk_events_count: int
+    recommendation: str
+
+@dataclass
 class StockAnalysis:
     """종목 분석 결과"""
     ticker: str
@@ -36,6 +46,7 @@ class StockAnalysis:
     trend_score: float  # 0-100 (높을수록 상승 추세)
     volume_score: float  # 0-100 (높을수록 거래량 증가)
     overall_score: float  # 0-100 (종합 점수)
+    risk_event_analysis: Optional[RiskEventAnalysis]  # 리스크 이벤트 분석 추가
     analysis_summary: str
     personalized_recommendation: str
 
@@ -81,10 +92,13 @@ class PersonalizedStockAnalyzer:
             # 사용자 프로필 가져오기
             profile = memory_manager.get_user_profile(user_id)
             
+            # 리스크 이벤트 분석 (MCP 에이전트를 통해)
+            risk_event_analysis = self._analyze_risk_events(ticker)
+            
             # 맞춤형 분석
-            analysis_summary = self._generate_analysis_summary(indicators, scores, profile)
+            analysis_summary = self._generate_analysis_summary(indicators, scores, profile, risk_event_analysis)
             personalized_recommendation = self._generate_personalized_recommendation(
-                ticker, indicators, scores, profile
+                ticker, indicators, scores, profile, risk_event_analysis
             )
             
             return StockAnalysis(
@@ -99,6 +113,7 @@ class PersonalizedStockAnalyzer:
                 trend_score=scores['trend_score'],
                 volume_score=scores['volume_score'],
                 overall_score=scores['overall_score'],
+                risk_event_analysis=risk_event_analysis,
                 analysis_summary=analysis_summary,
                 personalized_recommendation=personalized_recommendation
             )
@@ -129,6 +144,35 @@ class PersonalizedStockAnalyzer:
             }
         except Exception as e:
             print(f"주식 데이터 가져오기 실패: {e}")
+            return None
+    
+    def _analyze_risk_events(self, ticker: str) -> Optional[RiskEventAnalysis]:
+        """리스크 이벤트 분석 (MCP 에이전트 호출)"""
+        try:
+            # MCP 에이전트를 통한 리스크 분석
+            # 실제 구현에서는 agent_graph의 investment_agent를 통해 호출
+            # 여기서는 시뮬레이션 데이터 반환 (실제 MCP 호출은 agent_graph에서 처리)
+            
+            # 시뮬레이션: 실제로는 MCP 에이전트 호출
+            # TODO: 실제 MCP 에이전트 호출로 대체 필요
+            risk_score = 45  # 시뮬레이션 값
+            risk_level = "medium"
+            risk_factors = ["시장 변동성 증가", "재무 건전성 우려"]
+            recent_events_count = 3
+            high_risk_events_count = 1
+            recommendation = "보통 수준의 리스크입니다. 적절한 리스크 관리가 필요합니다."
+            
+            return RiskEventAnalysis(
+                risk_score=risk_score,
+                risk_level=risk_level,
+                risk_factors=risk_factors,
+                recent_events_count=recent_events_count,
+                high_risk_events_count=high_risk_events_count,
+                recommendation=recommendation
+            )
+            
+        except Exception as e:
+            print(f"리스크 이벤트 분석 실패: {e}")
             return None
     
     def _calculate_technical_indicators(self, stock_data: Dict) -> TechnicalIndicators:
@@ -219,7 +263,8 @@ class PersonalizedStockAnalyzer:
         }
     
     def _generate_analysis_summary(self, indicators: TechnicalIndicators, 
-                                 scores: Dict[str, float], profile: Optional[InvestmentProfile]) -> str:
+                                 scores: Dict[str, float], profile: Optional[InvestmentProfile],
+                                 risk_event_analysis: Optional[RiskEventAnalysis]) -> str:
         """분석 요약 생성"""
         summary_parts = []
         
@@ -250,11 +295,18 @@ class PersonalizedStockAnalyzer:
         if indicators.current_volume > indicators.volume_avg * 1.5:
             summary_parts.append("거래량이 평균 대비 크게 증가했습니다.")
         
+        # 리스크 이벤트 분석 추가
+        if risk_event_analysis:
+            summary_parts.append(f"리스크 레벨: {risk_event_analysis.risk_level} ({risk_event_analysis.risk_score}/100)")
+            if risk_event_analysis.high_risk_events_count > 0:
+                summary_parts.append(f"고위험 이벤트 {risk_event_analysis.high_risk_events_count}개 발생")
+        
         return " | ".join(summary_parts)
     
     def _generate_personalized_recommendation(self, ticker: str, indicators: TechnicalIndicators,
                                             scores: Dict[str, float], 
-                                            profile: Optional[InvestmentProfile]) -> str:
+                                            profile: Optional[InvestmentProfile],
+                                            risk_event_analysis: Optional[RiskEventAnalysis]) -> str:
         """맞춤형 추천 생성"""
         if not profile:
             return "투자 성향 프로필이 없어 일반적인 분석만 제공됩니다."
@@ -310,6 +362,12 @@ class PersonalizedStockAnalyzer:
         recommendations.append(f"권장 손절매: -{profile.stop_loss_tolerance}%")
         recommendations.append(f"권장 익절매: +{profile.take_profit_target}%")
         
+        # 리스크 이벤트 기반 추천 추가
+        if risk_event_analysis:
+            recommendations.append(f"리스크 이벤트 분석: {risk_event_analysis.recommendation}")
+            if risk_event_analysis.risk_level in ["high", "critical"]:
+                recommendations.append("고위험 상태로 투자 신중 검토 필요")
+        
         return " | ".join(recommendations)
 
 class BuySellRecommendationEngine:
@@ -343,7 +401,8 @@ class BuySellRecommendationEngine:
             "stop_loss": recommendation["stop_loss"],
             "take_profit": recommendation["take_profit"],
             "time_horizon": recommendation["time_horizon"],
-            "risk_level": recommendation["risk_level"]
+            "risk_level": recommendation["risk_level"],
+            "risk_event_analysis": analysis.risk_event_analysis
         }
     
     def _calculate_recommendation(self, analysis: StockAnalysis, 
@@ -385,6 +444,15 @@ class BuySellRecommendationEngine:
         elif profile.risk_tolerance == RiskTolerance.AGGRESSIVE:
             if analysis.momentum_score > 70:
                 buy_score += 15
+        
+        # 리스크 이벤트 분석 고려
+        if analysis.risk_event_analysis:
+            if analysis.risk_event_analysis.risk_level == "critical":
+                sell_score += 30
+            elif analysis.risk_event_analysis.risk_level == "high":
+                sell_score += 15
+            elif analysis.risk_event_analysis.risk_level == "low":
+                buy_score += 10
         
         # 최종 추천 결정
         if buy_score > sell_score + 10:
@@ -476,6 +544,15 @@ class BuySellRecommendationEngine:
             reasons.append("보수적 투자자에게 적합한 리스크 관리가 필요합니다.")
         elif profile.risk_tolerance == RiskTolerance.AGGRESSIVE:
             reasons.append("공격적 투자자에게 적합한 수익 기회입니다.")
+        
+        # 리스크 이벤트 기반 이유 추가
+        if analysis.risk_event_analysis:
+            if analysis.risk_event_analysis.risk_level == "critical":
+                reasons.append("중대한 리스크 이벤트가 발생하여 신중한 접근이 필요합니다.")
+            elif analysis.risk_event_analysis.risk_level == "high":
+                reasons.append("높은 리스크 이벤트가 감지되어 주의가 필요합니다.")
+            elif analysis.risk_event_analysis.risk_level == "low":
+                reasons.append("리스크 이벤트가 적어 상대적으로 안전한 환경입니다.")
         
         return " | ".join(reasons)
 
