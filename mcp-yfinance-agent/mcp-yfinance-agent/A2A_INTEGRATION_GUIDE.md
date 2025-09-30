@@ -40,8 +40,6 @@
 
 ### 1. 서버 연결
 
-우리 시스템에 연결하려면 다음 엔드포인트를 사용하세요:
-
 ```python
 # WebSocket 연결
 WEBSOCKET_ENDPOINTS = {
